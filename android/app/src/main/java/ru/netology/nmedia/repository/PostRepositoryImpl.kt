@@ -63,15 +63,14 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun likeById(id: Long) {
         try {
-            dao.likeById(id, true)
+            dao.likeById(id)
             val response = PostsApi.service.likeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-            val body = response.body() ?: throw ApiError(response.code(), response.message())
-
+            response.body() ?: throw ApiError(response.code(), response.message())
         } catch (e: Exception) {
-            dao.likeById(id, false)
+            dao.likeById(id)
             throw UnknownError
         }
     }
